@@ -16,90 +16,88 @@ D=[ [1,1],
 E = [ [1,0,] ]
 F = [[25]]
 
-class Matrice():
-    def __init__(self, matrice):
-        if type(matrice) != list:
-            raise TypeError("La matrice en entrée doit être une liste")
-        self.matrice = matrice
+class Matrix():
+    def __init__(self, inputmatrix):
+        if type(inputmatrix) != list:
+            raise TypeError("input matrix must be a 2d list")
+        self.matrix = inputmatrix
     
     
-    def addition(self, autre):
-        if type(autre) != list:
-             raise TypeError("Addition de matrice doit se faire entre deux matrices")
-        sortie = [[0 for _ in range(len(self.matrice[0]))]for _ in range(len(self.matrice))]
-        for x in range(len(self.matrice)):
-            for y in range(len(self.matrice[0])):
-                sortie[x][y] = self.matrice[x][y] + autre[x][y]
-        return sortie
+    def addition(self, inputmatrix):
+        if type(inputmatrix) != list:
+             raise TypeError("matrices must be of the same size for addition")
+        output = [[0 for _ in range(len(self.matrix[0]))]for _ in range(len(self.matrix))]
+        for x in range(len(self.matrix)):
+            for y in range(len(self.matrix[0])):
+                output[x][y] = self.matrix[x][y] + inputmatrix[x][y]
+        return output
     
     
-    def multiplication(self, autre):
-        if type(autre) == int or type(autre) == float:                                           # Multiplication par une constatne
-            sortie = [[0 for _ in range(len(self.matrice[0]))]for _ in range(len(self.matrice))]
-            for x in range(len(self.matrice)):
-                for y in range(len(self.matrice[0])):
-                    sortie[x][y] = self.matrice[x][y] * autre
-            return(sortie)
+    def multiplication(self, inputmatrix):
+        if type(inputmatrix) == int or type(inputmatrix) == float:                                           # Multiplication by a constant
+            output = [[0 for _ in range(len(self.matrix[0]))]for _ in range(len(self.matrix))]
+            for x in range(len(self.matrix)):
+                for y in range(len(self.matrix[0])):
+                    output[x][y] = self.matrix[x][y] * inputmatrix
+            return(output)
             
-        elif type(autre) == list:                                                                 #Multiplication par une autre matrice
-            sortie = [[0 for _ in range(len(autre))]for _ in range(len(self.matrice[0]))]
-            for lignesortie in range(len(self.matrice)):
-                for colonnesortie in range(len(self.matrice[0])):
-                    case = 0
-                    for i in range(len(autre)):
-                        case += self.matrice[lignesortie][i] * autre[i][colonnesortie]
-                    sortie[lignesortie][colonnesortie] = case
-            return(sortie)
+        elif type(inputmatrix) == list:                                                                 #Multiplication by another matrix
+            output = [[0 for _ in range(len(inputmatrix))]for _ in range(len(self.matrix[0]))]
+            for outputline in range(len(self.matrix)):
+                for outputcolumn in range(len(self.matrix[0])):
+                    position = 0
+                    for i in range(len(inputmatrix)):
+                        position += self.matrix[outputline][i] * inputmatrix[i][outputcolumn]
+                    output[outputline][outputcolumn] = position
+            return(output)
 
         
-        else: raise TypeError("Multiplication avec une matrice(liste) ou un nombre")     
+        else: raise TypeError("Can only multiply a matrix with a number or another matrix")     
 
-    def transposée(self):                                                                           #Transposée
-        sortie = [[0 for _ in range(len(self.matrice[0]))]for _ in range(len(self.matrice))]
-        for x in range(len(self.matrice)):
-            for y in range(len(self.matrice[0])):
-                sortie[y][x] = self.matrice[x][y]
-        return(sortie)
+    def transpose(self):                                                                           
+        output = [[0 for _ in range(len(self.matrix[0]))]for _ in range(len(self.matrix))]
+        for x in range(len(self.matrix)):
+            for y in range(len(self.matrix[0])):
+                output[y][x] = self.matrix[x][y]
+        return(output)
 
 
     
     
-                                                                                            #bloque une ligne et une colonne et donne la matrice résultante.
-    def matrice_restante(self, ligne, colonne):                                               #ligne et colonne : index dans la liste, pas le i ou le j normal.
-        if type(ligne) != int or type(colonne) != int:
-            raise TypeError("Cagfmsjngdggdfnhkdfhglkdf")
+                                                                                            #blocks a line a column, returns leftover matrix
+    def leftover_matrix(self, line, column):                                                #line and column : index of list
+        if type(line) != int or type(column) != int:
+            raise TypeError("line and column index must be int")
 
-        for i in range(len(self.matrice)):
-            self.matrice[i].pop(colonne)
-        self.matrice.pop(ligne)
-        if self.matrice == []:
-            raise ValueError("la matrice restante est vide/n'existe pas")
+        for i in range(len(self.matrix)):
+            self.matrix[i].pop(column)
+        self.matrix.pop(line)
+        if self.matrix == []:
+            raise ValueError("leftover matrix is empty/does not exist")
         else:
-            return self.matrice
+            return self.matrix
 
-    def check_matrice_carrée(self):
-        if len(self.matrice) == len(self.matrice[0]):
-            return True
-        else: return False
+    def check_square_matrix(self):
+        if len(self.matrix) != len(self.matrix[0]):
+            raise ValueError("determinant only exist for square matrices")
     
-    def déterminant(self):
-        if not self.check_matrice_carrée():
-            raise ValueError("le déterminant n'existe que pour les matrices carrées")
-        if len(self.matrice) == 1:
-            return self.matrice[0][0]
-        if len(self.matrice) == 2:
-            return (self.matrice[0][0] * self.matrice[1][1]) - (self.matrice[1][0] * self.matrice[0][1])
+    def determinant(self):
+        self.check_square_matrix()
+        if len(self.matrix) == 1:
+            return self.matrix[0][0]
+        if len(self.matrix) == 2:
+            return (self.matrix[0][0] * self.matrix[1][1]) - (self.matrix[1][0] * self.matrix[0][1])
         else:
             det = 0
-            for j in range(len(self.matrice)):
+            for j in range(len(self.matrix)):
                 print(j)
                 if j%2 == 0:
-                    signe = -1
+                    sign = -1
                 elif j%2 == 1:
-                    signe = 1
-                petitematrice = Matrice(self.matrice_restante(0, j))
-                print(petitematrice.matrice)
-                #det += signe * petitdet
+                    sign = 1
+                smallmatrix = Matrix(self.leftover_matrix(0, j))
+                print(smallmatrix.matrix)
+
 
                 
             return det
@@ -115,7 +113,7 @@ class Matrice():
 
 
 
-    def cofacteur(self, ligne, colonne):                                    #ligne et colonne : index dans la liste
+    def cofactor(self, line, column):                                    #line and column : index of list
         pass
 
 
@@ -137,45 +135,45 @@ D=[ [1,1],
 E = [ [1,0] ]
 F = [[25]]"""
 
-matriceA = Matrice(A)
-matriceB = Matrice(B)
-matriceC = Matrice(C)
-matriceI = Matrice(I)
-matriceD = Matrice(D)
-matriceE = Matrice(E)
-matriceF = Matrice(F)
+matrixA = Matrix(A)
+matrixB = Matrix(B)
+matrixC = Matrix(C)
+matrixI = Matrix(I)
+matrixD = Matrix(D)
+matrixE = Matrix(E)
+matrixF = Matrix(F)
 
 
-print(matriceA.déterminant())
+print(matrixA.determinant())
 
 """
-print("A: ", matriceA.matrice_restante(2,1))
-print("B: ", matriceB.matrice_restante(2,2))
+print("A: ", matrixA.leftover_matrix(2,1))
+print("B: ", matrixB.leftover_matrix(2,2))
 try :
-    print("C: ", matriceC.matrice_restante(3,2))
+    print("C: ", matrixC.leftover_matrix(3,2))
 except: pass
-print("D: ", matriceD.matrice_restante(1,0))
-#print("E: ", matriceE.matrice_restante(0,0))
-#print("F: ", matriceF.matrice_restante(,))
-print("I: ", matriceI.matrice_restante(1,1))
+print("D: ", matrixD.leftover_matrix(1,0))
+#print("E: ", matrixE.leftover_matrix(0,0))
+#print("F: ", matrixF.leftover_matrix(,))
+print("I: ", matrixI.leftover_matrix(1,1))
 """
 
-#print("E: ", matriceE.déterminant())
-#print("F: ", matriceF.déterminant())
-#print("D: ", matriceD.déterminant())
-#print("A: ", matriceA.déterminant())
-"""print("B: ", matriceB.déterminant())
-print("C: ", matriceC.déterminant())
-print("I: ", matriceI.déterminant())
+#print("E: ", matrixE.determinant())
+#print("F: ", matrixF.determinant())
+#print("D: ", matrixD.determinant())
+#print("A: ", matrixA.determinant())
+"""print("B: ", matrixB.determinant())
+print("C: ", matrixC.determinant())
+print("I: ", matrixI.determinant())
 """
 
 """
-print(matriceA.mineur(0,1))
+print(matrixA.minor(0,1))
 
 
-print(matriceA.addition(matriceB.matrice))
+print(matrixA.addition(matrixB.matrix))
 
-print(matriceB.multiplication(matriceA.matrice))
+print(matrixB.multiplication(matrixA.matrix))
 
 
 """
