@@ -15,7 +15,9 @@ D=[ [1,1],
     [4,0] ]
 E = [ [1,0,] ]
 F = [[25]]
-
+G=[ [6,1,1],
+    [4,-2,5], 
+    [2,8,7] ]    
 class Matrix():
     def __init__(self, inputmatrix):
         if type(inputmatrix) != list:
@@ -34,14 +36,16 @@ class Matrix():
     
     
     def multiplication(self, inputmatrix):
-        if type(inputmatrix) == int or type(inputmatrix) == float:                                           # Multiplication by a constant
+            # Multiplication by a constant
+        if type(inputmatrix) == int or type(inputmatrix) == float:                                           
             output = [[0 for _ in range(len(self.matrix[0]))]for _ in range(len(self.matrix))]
             for x in range(len(self.matrix)):
                 for y in range(len(self.matrix[0])):
                     output[x][y] = self.matrix[x][y] * inputmatrix
             return(output)
             
-        elif type(inputmatrix) == list:                                                                 #Multiplication by another matrix
+            #Multiplication by another matrix
+        elif type(inputmatrix) == list:                                                                 
             output = [[0 for _ in range(len(inputmatrix))]for _ in range(len(self.matrix[0]))]
             for outputline in range(len(self.matrix)):
                 for outputcolumn in range(len(self.matrix[0])):
@@ -63,19 +67,17 @@ class Matrix():
 
 
     
-    
-                                                                                            #blocks a line a column, returns leftover matrix
-    def leftover_matrix(self, line, column):                                                #line and column : index of list
-        if type(line) != int or type(column) != int:
-            raise TypeError("line and column index must be int")
-
-        for i in range(len(self.matrix)):
-            self.matrix[i].pop(column)
-        self.matrix.pop(line)
-        if self.matrix == []:
+        #blocks a line and a column, returns leftover matrix
+        #line and column : index of list                                                                                       
+    def leftover_matrix(self, line : int, column : int):                                                
+        tempmatrix = [ row[:] for row in self.matrix]
+        for i in range(len(tempmatrix)):
+            tempmatrix[i].pop(column)
+        tempmatrix.pop(line)
+        if tempmatrix == []:
             raise ValueError("leftover matrix is empty/does not exist")
         else:
-            return self.matrix
+            return tempmatrix
 
     def check_square_matrix(self):
         if len(self.matrix) != len(self.matrix[0]):
@@ -90,16 +92,9 @@ class Matrix():
         else:
             det = 0
             for j in range(len(self.matrix)):
-                print(j)
-                if j%2 == 0:
-                    sign = -1
-                elif j%2 == 1:
-                    sign = 1
+                sign = (-1) ** j
                 smallmatrix = Matrix(self.leftover_matrix(0, j))
-                print(smallmatrix.matrix)
-
-
-                
+                det += (sign * self.matrix[0][j] * smallmatrix.determinant())
             return det
 
     
@@ -107,13 +102,14 @@ class Matrix():
         
         
     
-    
+    def minor(self, line, column):
+        pass
     
     
 
 
-
-    def cofactor(self, line, column):                                    #line and column : index of list
+        #line and column : index of list
+    def cofactor(self, line, column): 
         pass
 
 
@@ -142,11 +138,17 @@ matrixI = Matrix(I)
 matrixD = Matrix(D)
 matrixE = Matrix(E)
 matrixF = Matrix(F)
+matrixG = Matrix(G)
 
 
-print(matrixA.determinant())
+
+
 
 """
+
+
+
+print(matrixG.determinant())   #devrait donner -306
 print("A: ", matrixA.leftover_matrix(2,1))
 print("B: ", matrixB.leftover_matrix(2,2))
 try :
