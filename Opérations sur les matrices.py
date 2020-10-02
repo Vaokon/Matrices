@@ -75,15 +75,10 @@ class Matrix():
         try: self.check_same_size(othermatrix)
         except: return False
         if isinstance(othermatrix, Matrix):
-            for i in range(len(self.matrix)):
-                for j in range(len(self.matrix[0])):
-                    if self.matrix[i][j] != othermatrix.matrix[i][j]:
-                        return False
-            return True
+            if self.matrix == othermatrix.matrix:
+                return True
+            else: return False
         else: return False
-
-
-
 
     def __ne__(self, othermatrix):
         if self == othermatrix: return False
