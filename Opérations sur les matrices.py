@@ -1,23 +1,4 @@
-A=[ [1,2,3],
-    [4,5,6], 
-    [7,8,9] ]
-B=[ [1,0,0],
-    [0,0,1], 
-    [0,1,0] ]
-I=[ [1,0,0],
-    [0,1,0], 
-    [0,0,1] ]    
-
-C=[ [1,0,5],
-    [4,0,42], 
-    [8,0,1] ]    
-D=[ [1,1],
-    [4,0] ]
-E = [ [1,0,] ]
-F = [[25]]
-G=[ [6,1,1],
-    [4,-2,5], 
-    [2,8,7] ]    
+import timeit
 class Matrix():
     def __init__(self, inputmatrix):
         if type(inputmatrix) != list:
@@ -34,7 +15,10 @@ class Matrix():
                 output[x][y] = self.matrix[x][y] + inputmatrix[x][y]
         return output
     
+    def substract(self, inputmatrix):
+        return self.addition(Matrix(inputmatrix).multiplication(-1))
     
+        #input matrix must be an int or a list
     def multiplication(self, inputmatrix):
             # Multiplication by a constant
         if type(inputmatrix) == int or type(inputmatrix) == float:                                           
@@ -96,27 +80,27 @@ class Matrix():
                 smallmatrix = Matrix(self.leftover_matrix(0, j))
                 det += (sign * self.matrix[0][j] * smallmatrix.determinant())
             return det
-
     
-        
-        
-        
-    
+        #line and column : index of list
     def minor(self, line, column):
-        pass
-    
-    
-
+        self.check_square_matrix()
+        return Matrix(self.leftover_matrix(line, column)).determinant()
 
         #line and column : index of list
     def cofactor(self, line, column): 
-        pass
+        self.check_square_matrix()
+        return (-1) ** (line+column) * self.minor(line, column)
+
+    def trace(self):
+        self.check_square_matrix()
+        return sum(self.matrix[i][i] for i in range(len(self.matrix)))
 
 
-"""A=[ [1,2,3],
+A=[ [1,2,3],
     [4,5,6], 
     [7,8,9] ]
 B=[ [1,0,0],
+
     [0,0,1], 
     [0,1,0] ]
 I=[ [1,0,0],
@@ -128,8 +112,16 @@ C=[ [1,0,5],
     [8,0,1] ]    
 D=[ [1,1],
     [4,0] ]
-E = [ [1,0] ]
-F = [[25]]"""
+E = [ [1,0,] ]
+F = [[25]]
+G=[ [6,1,1],
+    [4,-2,5], 
+    [2,8,7] ]    
+
+H= [ [1,2,1,0],
+    [0,3,1,1], 
+    [-1,0,3,1],
+    [3,1,2,0] ]    
 
 matrixA = Matrix(A)
 matrixB = Matrix(B)
@@ -139,6 +131,9 @@ matrixD = Matrix(D)
 matrixE = Matrix(E)
 matrixF = Matrix(F)
 matrixG = Matrix(G)
+matrixH = Matrix(H)
+
+
 
 
 
@@ -148,8 +143,13 @@ matrixG = Matrix(G)
 
 
 
+print(matrixA.substract(matrixB.matrix))
+print(matrixA.trace())
+print(matrixH.determinant())
 print(matrixG.determinant())   #devrait donner -306
 print("A: ", matrixA.leftover_matrix(2,1))
+
+
 print("B: ", matrixB.leftover_matrix(2,2))
 try :
     print("C: ", matrixC.leftover_matrix(3,2))
@@ -178,4 +178,33 @@ print(matrixA.addition(matrixB.matrix))
 print(matrixB.multiplication(matrixA.matrix))
 
 
+"""
+"""
+def setup():
+    pass
+
+def loop():
+    A = Matrix([
+        [1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 9]
+    ])
+    B = Matrix([
+        [1, 0, 0],
+        [0, 0, 1],
+        [0, 1, 0]
+    ])
+
+    temp = A.substract(B.matrix)
+    temp = A.multiplication(6)
+    temp = A.multiplication(B.matrix)
+    temp = B.multiplication(A.matrix)
+    temp = A.minor(2, 2)
+    temp = A.cofactor(2, 2)
+    temp = A.transpose()
+    temp = A.determinant()
+    temp = A.trace()
+
+
+print(timeit.repeat(stmt=loop, setup=setup, repeat=5, number=10000))
 """
