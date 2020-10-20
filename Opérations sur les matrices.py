@@ -216,6 +216,22 @@ class Augmented_Matrix():
             return TypeError("indexes for rows must be integers")
         for j in range(len(self.augmatrix[0])):
             self.augmatrix[targetrow][j] = self.augmatrix[targetrow][j] - self.augmatrix[substractedrow][j]
+    
+    #row is the list's index
+    def multiply_row_by_constant(self, row, constant):
+        if type(row) != int:
+            return TypeError("index for row must be integer")
+        if type(constant) != int and type(constant) != float:
+            return TypeError("constant must be a number")
+        for j in range(len(self.augmatrix[0])):
+            self.augmatrix[row][j] = self.augmatrix[row][j] * constant
+        
+    #row is the list's index
+    def divide_row_by_constant(self, row, constant):
+        if type(constant) != int and type(constant) != float:
+            return TypeError("constant must be a number")
+        self.multiply_row_by_constant(row, 1/constant)
+        
 
 
 A=[ [1,2,3],
